@@ -8,6 +8,7 @@ Probably only works on linux.
 Requires installing package xdotool: `sudo apt install xdotool`
 
 Everything following is from the original.
+
 ---
 To determine how you spend your time, TagTime literally randomly samples you.
 At random times it pops up and asks what you're doing *right at that moment*.
