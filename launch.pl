@@ -7,7 +7,6 @@ $launchTime = time();
 
 require "$ENV{HOME}/.tagtimerc";
 require "${path}util.pl";
-
 my $args = join(' ', @ARGV); # supported arguments: test, quiet
 my $test =   ($args =~ /\btest\b/);
 my $quiet =  ($args =~ /\bquiet\b/);
@@ -33,9 +32,9 @@ if(-e $logf) {
   $nxtping = prevping($launchTime);
 }
 
-if(!lockn()) { 
-  print "Can't get lock. Exiting.\n" unless $quiet; 
-  exit(1); 
+if(!lockn()) {
+  print "Can't get lock. Exiting.\n" unless $quiet;
+  exit(1);
 } # Don't wait if we can't get the lock.
 
 my $editorFlag = 0;
@@ -59,10 +58,10 @@ do {
     }
     my($ts,$ln) = lastln();
     if($ts != $nxtping) { # in case, eg, we closed the window w/o answering.
-      # suppose there's a ping window waiting (call it ping 1), and while it's 
-      # sitting there unanswered another ping (ping 2) pings.  then you kill 
-      # the ping 1 window.  the editor will then pop up for you to fix the err 
-      # ping but there will be nothing in the log yet for ping 2.  perhaps 
+      # suppose there's a ping window waiting (call it ping 1), and while it's
+      # sitting there unanswered another ping (ping 2) pings.  then you kill
+      # the ping 1 window.  the editor will then pop up for you to fix the err
+      # ping but there will be nothing in the log yet for ping 2.  perhaps
       # that's ok, just thinking out loud here...
       slog(annotime(
              "$nxtping err [missed ping from ".ss(time()-$nxtping)." ago]",
@@ -92,7 +91,7 @@ unlock();
 
 # Returns the last line in the log but as a 2-element array
 #   consisting of timestamp and rest of the line.
-sub lastln { 
+sub lastln {
   my $x;
   open(L, $logf) or die "ERROR-lastln: Can't open log: $!";
   $x = $_ while(<L>);
@@ -101,9 +100,36 @@ sub lastln {
   return ($1,$2);
 }
 
+# check if active window matches %autotags, submit text if it does
+sub windowcheck {
+  my($t) = @_;
+  my($wintitle) = `xdotool getwindowfocus getwindowname`;
+  my($str2submit) = "";
+  while(my($regex, $txt2submit) = each %autotags) {
+    if ($wintitle =~ $regex){#window title matches a regex in %autotags
+      if($str2submit eq ""){
+        $str2submit = $txt2submit;
+      } else {
+        $str2submit .= " $txt2submit";
+      }
+    }
+  }
+  if($str2submit ne "" ){ #if something matched, slog with corresponding text
+    slog(annotime("$t $str2submit", $t)."\n");
+    print "Autosubmitted tags for $wintitle\n";
+    return 1;
+  }
+  else {
+    return 0;
+  }
+}
+
 # Launch the tagtime pinger for the given time (in unix time).
 sub launch {
   my($t) = @_;
+  if (windowcheck($t)) { # don't launch the pinger if autotag window is active
+    return;
+  }
   my($sec,$min,$hour) = localtime($t);
   $sec = dd($sec); $min = dd($min); $hour = dd($hour);
   #$ENV{DISPLAY} = ":0.0";  # have to set this explicitly if invoked by cron.

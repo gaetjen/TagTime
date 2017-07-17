@@ -1,3 +1,14 @@
+During certain activities, like e.g. playing an action game you really don't
+want to be interrupted, even for a few seconds. So with this fork, TagTime
+checks the title of the active window, and if it matches a regular expression
+specified in settings.pl it automatically logs the corresponding text/tags.
+
+Probably only works on linux.
+
+Requires installing package xdotool: `sudo apt install xdotool`
+
+Everything following is from the original.
+---
 To determine how you spend your time, TagTime literally randomly samples you.
 At random times it pops up and asks what you're doing *right at that moment*.
 You answer with tags.

@@ -17,7 +17,7 @@ $XT = "__XT__";    # CHANGEME to your path to xterm
 #   https://www.beeminder.com/api/v1/auth_token.json
 $beemauth = "abc123";  # CHANGEME to your personal beeminder auth token
 
-# WARNING WARNING WARNING: 
+# WARNING WARNING WARNING:
 #   if you point this at a beeminder goal with data that was not generated from
 #   this tagtime log, it will DELETE ALL OF YOUR DATA
 # CHANGEME by adding entries for each beeminder graph you want to auto-update:
@@ -38,9 +38,9 @@ $beemauth = "abc123";  # CHANGEME to your personal beeminder auth token
   #}
 );
 
-# Pings from more than this many seconds ago get autologged with tags "afk" and 
-# "RETRO". (Pings can be overdue either because the computer was off or tagtime 
-# was waiting for you to answer a previous ping. If the computer was off, the 
+# Pings from more than this many seconds ago get autologged with tags "afk" and
+# "RETRO". (Pings can be overdue either because the computer was off or tagtime
+# was waiting for you to answer a previous ping. If the computer was off, the
 # tag "off" is also added.)
 $retrothresh = 60;
 
@@ -54,7 +54,7 @@ $catchup = 0;  # Whether it beeps for old pings, ie, should it beep a bunch
                # of times in a row when the computer wakes from sleep.
 
 $enforcenums = 0;  # Whether it forces you to include a number in your
-                   # ping response (include tag non or nonXX where XX is day 
+                   # ping response (include tag non or nonXX where XX is day
                    # of month to override). This is for task editor integration.
 
 # System command that will play a sound for pings.
@@ -63,5 +63,12 @@ $enforcenums = 0;  # Whether it forces you to include a number in your
 # $playsound = "echo -e '\a'"; # this is the default if $playsound not defined.
 # $playsound = "";  # makes tagtime stay quiet.
 
+# use this to automatically submit something if the active window matches the
+# regex on the left. this can be useful if there are certain programs where you
+# are fairly certain you will not be doing something else while it is open and
+# active and being interrupted could be very annoying (e.g. an action game)
+%autotags = (
+#  qr/^Crypt of the NecroDancer$/ => "gam (cotnd) ngo"
+);
 
 1; # When requiring a library in perl it has to return 1.
